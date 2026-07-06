@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Colorful Content Creator</title>
+<title>Colorful Content Creator Studio Pro</title>
 
 <style>
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Segoe UI,sans-serif;
+font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body{
@@ -26,9 +26,9 @@ transition:.4s;
 
 .container{
 background:white;
-width:900px;
+width:950px;
 max-width:100%;
-padding:25px;
+padding:30px;
 border-radius:18px;
 box-shadow:0 20px 50px rgba(0,0,0,.25);
 }
@@ -41,7 +41,7 @@ color:#444;
 
 textarea{
 width:100%;
-height:320px;
+height:280px;
 padding:15px;
 border:none;
 outline:none;
@@ -50,62 +50,95 @@ background:#f4f6fb;
 border-radius:12px;
 font-size:17px;
 line-height:1.6;
+transition: background 0.3s;
 }
 
-.stats{
-display:flex;
-justify-content:space-between;
-margin-top:12px;
-font-weight:bold;
-color:#666;
+.grid-stats {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+gap: 15px;
+margin-top: 15px;
+background: #f8f9fa;
+padding: 15px;
+border-radius: 12px;
+}
+
+.stat-item {
+text-align: center;
+font-size: 14px;
+color: #555;
+}
+
+.stat-item span {
+display: block;
+font-size: 20px;
+font-weight: bold;
+color: #2d3436;
+margin-top: 5px;
+}
+
+.tools-panel {
+display: flex;
+gap: 10px;
+margin-top: 20px;
+background: #f1f2f6;
+padding: 12px;
+border-radius: 10px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+.tools-panel input {
+padding: 8px 12px;
+border: 1px solid #ddd;
+border-radius: 6px;
+outline: none;
+flex: 1;
+min-width: 120px;
+}
+
+.tools-panel button {
+padding: 8px 15px;
+font-size: 14px;
+margin: 0;
+background: #00cec9;
 }
 
 .buttons{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:15px;
-margin-top:25px;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:12px;
+margin-top:20px;
 }
 
 button{
-padding:14px;
-font-size:16px;
+padding:12px;
+font-size:15px;
 font-weight:bold;
 border:none;
 border-radius:10px;
 cursor:pointer;
 transition:.3s;
 color:white;
+display: flex;
+justify-content: center;
+align-items: center;
+gap:8px;
 }
 
 button:hover{
 transform:translateY(-3px);
-box-shadow:0 8px 18px rgba(0,0,0,.25);
+box-shadow:0 8px 18px rgba(0,0,0,.15);
 }
 
-.copy{
-background:#00b894;
-}
-
-.clear{
-background:#d63031;
-}
-
-.download{
-background:#0984e3;
-}
-
-.capitalize{
-background:#6c5ce7;
-}
-
-.lower{
-background:#e17055;
-}
-
-.dark{
-background:#2d3436;
-}
+.copy{ background:#00b894; }
+.clear{ background:#d63031; }
+.download{ background:#0984e3; }
+.uppercase{ background:#6c5ce7; }
+.lower{ background:#e17055; }
+.sentence{ background:#fdcb6e; color: #2d3436; }
+.titlecase{ background:#fd79a8; }
+.dark{ background:#2d3436; }
 
 body.darkmode{
 background:#121212;
@@ -115,20 +148,36 @@ body.darkmode .container{
 background:#1f1f1f;
 }
 
-body.darkmode h1,
-body.darkmode .stats{
+body.darkmode h1, 
+body.darkmode footer{
 color:white;
 }
 
 body.darkmode textarea{
-background:#333;
+background:#2d2d2d;
 color:white;
 }
 
+body.darkmode .grid-stats,
+body.darkmode .tools-panel {
+background: #2d2d2d;
+}
+
+body.darkmode .stat-item,
+body.darkmode .stat-item span {
+color: #ddd;
+}
+
+body.darkmode .tools-panel input {
+background: #3a3a3a;
+border-color: #555;
+color: white;
+}
+
 footer{
-margin-top:20px;
+margin-top:25px;
 text-align:center;
-color:#888;
+color:#666;
 font-size:14px;
 }
 </style>
@@ -138,123 +187,167 @@ font-size:14px;
 
 <div class="container">
 
-<h1>✨ Content Creator Studio</h1>
+<h1>✨ Content Creator Studio Pro</h1>
 
-<textarea id="text"
-placeholder="Start writing amazing content..."></textarea>
+<textarea id="text" placeholder="Start writing amazing content..."></textarea>
 
-<div class="stats">
-<div>Words: <span id="words">0</span></div>
-<div>Characters: <span id="chars">0</span></div>
+<div class="grid-stats">
+<div class="stat-item">Words <span id="words">0</span></div>
+<div class="stat-item">Characters <span id="chars">0</span></div>
+<div class="stat-item">Sentences <span id="sentences">0</span></div>
+<div class="stat-item">Paragraphs <span id="paragraphs">0</span></div>
+<div class="stat-item">Reading Time <span id="readingTime">0m</span></div>
+<div class="stat-item">Top Keywords <span id="keywords" style="font-size:13px; font-weight:normal;">-</span></div>
+</div>
+
+<div class="tools-panel">
+<input type="text" id="findInput" placeholder="Find word...">
+<input type="text" id="replaceInput" placeholder="Replace with...">
+<button type="button" onclick="findReplace()">Replace All</button>
 </div>
 
 <div class="buttons">
-
-<button class="copy" onclick="copyText()">
-📋 Copy
-</button>
-
-<button class="clear" onclick="clearText()">
-🗑 Clear
-</button>
-
-<button class="download" onclick="downloadText()">
-💾 Download
-</button>
-
-<button class="capitalize" onclick="capitalizeText()">
-🔠 UPPERCASE
-</button>
-
-<button class="lower" onclick="lowercaseText()">
-🔡 lowercase
-</button>
-
-<button class="dark" onclick="toggleDark()">
-🌙 Dark Mode
-</button>
-
+<button class="copy" onclick="copyText()">📋 Copy</button>
+<button class="clear" onclick="clearText()">🗑 Clear</button>
+<button class="download" onclick="downloadText()">💾 Download</button>
+<button class="uppercase" onclick="transformText('upper')">🔠 UPPERCASE</button>
+<button class="lower" onclick="transformText('lower')">🔡 lowercase</button>
+<button class="sentence" onclick="transformText('sentence')">✍️ Sentence</button>
+<button class="titlecase" onclick="transformText('title')">📝 Title Case</button>
+<button class="dark" onclick="toggleDark()">🌙 Dark Mode</button>
 </div>
 
 <footer>
-Made with ❤️ in a Single HTML File
+Made with ❤️ | Auto-saved enabled
 </footer>
 
 </div>
 
 <script>
+const txt = document.getElementById("text");
 
-const txt=document.getElementById("text");
+// Event listeners for user typing and page load auto-restore
+txt.addEventListener("input", update);
+window.addEventListener("DOMContentLoaded", () => {
+    const savedText = localStorage.getItem("studio_content");
+    if (savedText) {
+        txt.value = savedText;
+        update();
+    }
+});
 
-txt.addEventListener("input",update);
+function update() {
+    const textValue = txt.value;
+    
+    // Auto-save feature
+    localStorage.setItem("studio_content", textValue);
 
-function update(){
+    // Words Analytics
+    let wordsArray = textValue.trim().split(/\s+/).filter(word => word.length > 0);
+    document.getElementById("words").innerHTML = wordsArray.length;
 
-let words=txt.value.trim().split(/\s+/);
+    // Characters Analytics
+    document.getElementById("chars").innerHTML = textValue.length;
 
-if(txt.value.trim()=="") words=[];
+    // Sentences Analytics
+    let sentences = textValue.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    document.getElementById("sentences").innerHTML = sentences.length;
 
-document.getElementById("words").innerHTML=words.length;
+    // Paragraphs Analytics
+    let paragraphs = textValue.split(/\n+/).filter(p => p.trim().length > 0);
+    document.getElementById("paragraphs").innerHTML = paragraphs.length;
 
-document.getElementById("chars").innerHTML=txt.value.length;
+    // Estimated Reading Time (Average 200 words per minute)
+    let readingMinutes = Math.ceil(wordsArray.length / 200);
+    document.getElementById("readingTime").innerHTML = wordsArray.length > 0 ? readingMinutes + "m" : "0m";
 
+    // Keyword Density Tracker (Top 3 words)
+    calculateKeywords(wordsArray);
 }
 
-function copyText(){
+function calculateKeywords(wordsArray) {
+    if (wordsArray.length === 0) {
+        document.getElementById("keywords").innerHTML = "-";
+        return;
+    }
+    
+    let counts = {};
+    wordsArray.forEach(word => {
+        let cleanWord = word.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
+        if (cleanWord.length > 2) { // filter out small words like 'a', 'to', 'is'
+            counts[cleanWord] = (counts[cleanWord] || 0) + 1;
+        }
+    });
 
-txt.select();
-
-document.execCommand("copy");
-
-alert("Copied!");
-
+    let sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    let topWords = sorted.slice(0, 3).map(w => `${w}(${counts[w]})`).join(", ");
+    document.getElementById("keywords").innerHTML = topWords || "-";
 }
 
-function clearText(){
+// Case transformations unified
+function transformText(type) {
+    if (!txt.value.trim()) return;
 
-txt.value="";
-
-update();
-
+    if (type === 'upper') {
+        txt.value = txt.value.toUpperCase();
+    } else if (type === 'lower') {
+        txt.value = txt.value.toLowerCase();
+    } else if (type === 'sentence') {
+        txt.value = txt.value.toLowerCase().replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, g1, g2) => g1 + g2.toUpperCase());
+    } else if (type === 'title') {
+        txt.value = txt.value.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+    }
+    update();
 }
 
-function downloadText(){
-
-let blob=new Blob([txt.value],{type:"text/plain"});
-
-let a=document.createElement("a");
-
-a.href=URL.createObjectURL(blob);
-
-a.download="content.txt";
-
-a.click();
-
+// Find and Replace Action
+function findReplace() {
+    const findStr = document.getElementById("findInput").value;
+    const replaceStr = document.getElementById("replaceInput").value;
+    
+    if (!findStr) {
+        alert("Please enter a word to find.");
+        return;
+    }
+    
+    // Global and case-insensitive replacement
+    const escapedFind = findStr.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const regex = new RegExp(escapedFind, 'gi');
+    txt.value = txt.value.replace(regex, replaceStr);
+    update();
 }
 
-function capitalizeText(){
-
-txt.value=txt.value.toUpperCase();
-
-update();
-
+function copyText() {
+    if(!txt.value) return;
+    navigator.clipboard.writeText(txt.value).then(() => {
+        alert("Copied to clipboard!");
+    }).catch(() => {
+        // Fallback for older browsers
+        txt.select();
+        document.execCommand("copy");
+        alert("Copied!");
+    });
 }
 
-function lowercaseText(){
-
-txt.value=txt.value.toLowerCase();
-
-update();
-
+function clearText() {
+    if(confirm("Are you sure you want to clear your content?")) {
+        txt.value = "";
+        update();
+    }
 }
 
-function toggleDark(){
-
-document.body.classList.toggle("darkmode");
-
+function downloadText() {
+    if(!txt.value.trim()) return;
+    let blob = new Blob([txt.value], {type: "text/plain;charset=utf-8"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "content-studio-export.txt";
+    a.click();
 }
 
+function toggleDark() {
+    document.body.classList.toggle("darkmode");
+}
 </script>
-
 </body>
 </html>
